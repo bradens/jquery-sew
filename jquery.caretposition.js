@@ -5,7 +5,13 @@
  * @author Bevis Zhao (i@bevis.me, http://bevis.me)
  */
 $(function() {
-
+	var browser = {
+		ie       : function(){ return navigator.userAgent.indexOf('MSIE') != -1; },
+		safari   : function(){ return navigator.vendor != undefined && navigator.vendor.indexOf("Apple") != -1; },
+		chrome   : function(){ return navigator.vendor != undefined && navigator.vendor.indexOf('Google') != -1; },
+		firefox  : function(){ return (navigator.userAgent.indexOf('Mozilla') != -1 && navigator.vendor != undefined && navigator.vendor == ''); },
+		windows  : function(){ return navigator.platform == "Win32"; }
+	}
 	var calculator = {
 		// key styles
 		primaryStyles: ['fontFamily', 'fontSize', 'fontWeight', 'fontVariant', 'fontStyle',
@@ -38,7 +44,7 @@ $(function() {
 			var cal = calculator, self = this, element = self[0], elementOffset = self.offset();
 
 			// IE has easy way to get caret offset position
-			if ($.browser.msie && $.browser.version <= 9) {
+			if (browser.ie()) {
 				// must get focus first
 				element.focus();
 			    var range = document.selection.createRange();
@@ -76,7 +82,7 @@ $(function() {
 			return {
 				top: focusOffset.top - simulatorOffset.top - element.scrollTop
 					// calculate and add the font height except Firefox
-					+ ($.browser.mozilla ? 0 : parseInt(self.getComputedStyle("fontSize"))),
+					+ (browser.firefox() ? 0 : parseInt(self.getComputedStyle("fontSize"))),
 				left: focus[0].offsetLeft -  cal.simulator[0].offsetLeft - element.scrollLeft
 			};
 		}
@@ -119,7 +125,7 @@ $(function() {
 			if (this.length == 0) return;
 			var thiz = this[0];
 			var result = this.css(styleName);
-			result = result || ($.browser.msie ?
+			result = result || (browser.ie() ?
 				thiz.currentStyle[styleName]:
 				document.defaultView.getComputedStyle(thiz, null)[styleName]);
 			return result;
@@ -167,7 +173,7 @@ $(function() {
 		      preCaretRange.setEnd(range.endContainer, range.endOffset);
 		      lastCursorPosition =  preCaretRange.toString().length;
 		  	}catch(e){
-		  		lastCursorPosition = this.data("lastCursorPosition");	
+		  		lastCursorPosition = this.data("lastCursorPosition");
 		  	}
 		  } else if (typeof document.selection != "undefined" && document.selection.type != "Control") {
 		      var textRange = document.selection.createRange();
