@@ -104,7 +104,9 @@ $(function() {
 	        range.moveStart('character', selectionStart);
 	        range.select();
 	    } else if (input.setSelectionRange) {
+	        val = input.value;
 	        input.focus();
+	        input.value = val;
 	        input.setSelectionRange(selectionStart, selectionEnd);
 	    } else {
 	    	var el = this.get(0);

@@ -137,10 +137,18 @@
 		var offset = this.$element.offset();
 		var pos = element.getCaretPosition();
 
-		this.$itemList.css({
-			left: offset.left + pos.left,
-			top: offset.top + pos.top
-		});
+		if (this.options.placement === "top") {
+			this.$itemList.css({
+				left: offset.left + pos.left,
+				top: offset.top + pos.top - this.$itemList.height() - parseInt(element.getComputedStyle("fontSize"))
+			});
+		}
+		else {
+			this.$itemList.css({
+				left: offset.left + pos.left,
+				top: offset.top + pos.top
+			});
+		}
 	};
 
 	Plugin.prototype.hideList = function () {
@@ -169,6 +177,18 @@
 
 		if(vals.length) {
 			this.renderElements(vals);
+			if (this.options.placement === "top") {
+				// vals = vals.reverse()
+				// We have to re-position the dropdown after filtering because
+				// the height may have changed.
+				var element = this.$element;
+				var offset = this.$element.offset();
+				var pos = element.getCaretPosition();
+				this.$itemList.css({
+					left: offset.left + pos.left,
+					top: offset.top + pos.top - this.$itemList.height() - parseInt(element.getComputedStyle("fontSize"))
+				});
+			}
 			this.$itemList.show();
 		} else {
 			this.hideList();
@@ -244,6 +264,7 @@
 		}
 
 		e.preventDefault();
+		if (listVisible && e.keyCode === 13) return false;
 	};
 
 	Plugin.prototype.onItemClick = function (element, e) {
